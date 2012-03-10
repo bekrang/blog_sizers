@@ -1,0 +1,18 @@
+<div style="font-size:20px;font-weight:bold;">GUEST_BOOK2</div>
+<br/>
+
+
+<script type="text/javascript" src="http://www.livere.co.kr/ver5/livere.jsp" charset="utf-8" ></script>	
+<div id='livereLayer' style='width:100%'> </div>
+<script type="text/javascript">
+<!--
+/* 아래의 두개의 변수 var rep와 var title은 티스토리(에서 제공하는 참조자) 유저용으로 만들어진 값입니다.*/
+//var rep = document.domain+"/[글번호등]";
+//var title = "[[##_article_rep_title_##]]";
+var rep = document.domain+"/postview/<%=postview.id%>";
+var title = "<%=postview.postTitle%>";
+
+var livereReply = new Livere( rep , "livereLayer" , title , "", "oralhazard", "default" , "openwhite" , 10);
+livereReply.init();
+//-->
+</script>
