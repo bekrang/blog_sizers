@@ -129,10 +129,15 @@
 					<li><a href="/">Home</a></li>
 					<br/>
 					<li><a href="/postlist/all">Post Category</a></li>
+					<%for(var i=0;i<postCate.length;i++){%>
+						<li><a href="/postlist/<%=postCate[i].key%>">- <%=postCate[i].val%></a></li>
+					<%}%>
+					<!-- 
 					<li><a href="/postlist/all">- All</a></li>
 					<li><a href="/postlist/dev">- Develope</a></li>
 					<li><a href="/postlist/pol">- Politics</a></li>
 					<li><a href="/postlist/les">- Leisure</a></li>
+					 -->
 					<br/>
 					<li><a href="/guestbook">Guest Book</a></li>
 					<!--<li><a href="/guestbook2">GUEST_BOOK2</a></li>-->

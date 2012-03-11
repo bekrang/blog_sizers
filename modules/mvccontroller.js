@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
-var properties = require('./properties.js');
-var models = require('./modules/models.js');
-var svcController = require('./modules/svccontroller.js');
+var properties = require('../properties.js');
+var models = require('./models.js');
+var svcController = require('./svccontroller.js');
 
 //Prototyping Date Object 
 Date.prototype.format = function(f) { 
@@ -31,37 +31,15 @@ String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s
 String.prototype.zf = function(len){return "0".string(len - this.length) + this;}; 
 Number.prototype.zf = function(len){return this.toString().zf(len);};
 
-//It's a useful mehtod
-var dump = exports.dump = function (obj, name) {
-	var indent = "  ";
-	if (typeof obj == "object") {
-		var child = null;
-		var output = (name) ? indent + name + "\n" : "";
-		indent += "\t";
+var renderSeed = function(title){
+	this.title = title;
+	this.postCate = properties.postCate;
+}
 
-		for (var item in obj)
-		{
-			try {
-				child = obj[item];
-			} catch (e) {
-				child = "<Unable to Evaluate>";
-			}
-
-			if (typeof child == "object") {
-				output += dump(child, item);
-			} else {
-				output += indent + item + ": " + child + "\n";
-			}
-		}
-		return output;
-	} else {
-		return obj;
-	}
-};
 
 
 //Routing?? or MVC Controlling??
-var router = exports.router = function(req, res, next){
+var mvcRoute = exports.mvcRoute = function(req, res, next){
 	var var1="",var2="",var3="";
 	
 	//Am I doing the right thing??
@@ -69,19 +47,24 @@ var router = exports.router = function(req, res, next){
 	if(req.params.var2) var2 = req.params.var2;
 	if(req.params.var3) var3 = req.params.var3;
 
-	if(var1=="") res.render('index',{title:"MAIN"});
+	if(var1=="") //res.render('index',new renderSeed("MAIN"));
+		{
+			var rnsd = new renderSeed("MMMM");
+			rnsd["layout"] = "";//or Another Test;
+			res.render('rssfeed',rnsd);
+		}
 	else if(var1=="callservice") {
 		//It's Service Oriented Architecture
 		svcController.callService(req, res);
 	}
 	else if(var1=="postlist") {
 		var oSrch = {};
-		var title = "POST LIST";
+		var rnsd = new renderSeed("POST LIST");
 		if(var2 != "all") 	oSrch = {"postCate":var2};
-		if(var2=="all") title += " - ALL";
-		else if(var2=="dev") title += " - Develope";
-		else if(var2=="pol") title += " - Politics";
-		else if(var2=="les") title += " - Leisure";
+		if(var2=="all") rnsd.title += " - ALL";
+		else if(var2=="dev") rnsd.title += " - Develope";
+		else if(var2=="pol") rnsd.title += " - Politics";
+		else if(var2=="les") rnsd.title += " - Leisure";
 		mongoose.connect(properties.mongodbUrl);
 		models.blogposts.find(oSrch).sort('date',-1).execFind( function (err, docs) {
 			mongoose.disconnect();
@@ -98,10 +81,9 @@ var router = exports.router = function(req, res, next){
 
 			var oBind = {};
 			//if(docs.length > 0) oBind = docs[0];
-			oBind["title"] = title;
-			oBind["postlist"] = docs;
-			oBind["lcate"] = var2;
-			res.render('postlist',oBind);
+			rnsd["postlist"] = docs;
+			rnsd["lcate"] = var2;
+			res.render('postlist',rnsd);
 		});
 	}
 	else if(var1=="postview") {
@@ -109,6 +91,8 @@ var router = exports.router = function(req, res, next){
 			res.end();
 			return;
 		}
+		var rnsd = new renderSeed("");
+		
 		mongoose.connect(properties.mongodbUrl);
 		models.blogposts.findOne({_id:var2}, function (err, docs) {
 			mongoose.disconnect();
@@ -122,21 +106,23 @@ var router = exports.router = function(req, res, next){
 		 	}
 			var oBind = {};
 			//if(docs.length > 0) oBind = docs[0];
-			oBind["title"] = docs.postTitle;
-			oBind["postview"] = docs;
-			oBind["lcate"] = (req.query.lcate||"");
-			res.render('postview',oBind);
+			rnsd["title"] = docs.postTitle;
+			rnsd["postview"] = docs;
+			rnsd["lcate"] = (req.query.lcate||"");
+			res.render('postview',rnsd);
 		});
 	}
-	else if(var1=="guestbook") res.render('guestbook',{title:"Guest Book"});
+	else if(var1=="guestbook") res.render('guestbook',new renderSeed("Guest Book"));
 	//else if(var1=="guestbook2") res.render('guestbook2',{title:"Guest Book"});
-	else if(var1=="profile") res.render('profile',{title:"My Profile"});
+	else if(var1=="profile") res.render('profile',new renderSeed("My Profile"));
 	else if(var1=="admin") {
+		var rnsd = new renderSeed("Admin");
+		rnsd["adminToken"] = var2;
+		
 		if(var2!=properties.adminToken) {
 			res.end("Admin authentication is not valid!!");return;
 		}
-		res.render('admin',{title:"Admin",adminToken:var2});
+		res.render('admin',rnsd);
 	}
 	else next();
 };
-
