@@ -47,12 +47,15 @@ var mvcRoute = exports.mvcRoute = function(req, res, next){
 	if(req.params.var2) var2 = req.params.var2;
 	if(req.params.var3) var3 = req.params.var3;
 
-	if(var1=="") //res.render('index',new renderSeed("MAIN"));
+	if(var1=="") res.render('index',new renderSeed("MAIN"));
+	/*
 		{
+			//Layout이 없거나 다른 걸로 셋팅하는 로직
 			var rnsd = new renderSeed("MMMM");
 			rnsd["layout"] = "";//or Another Test;
 			res.render('rssfeed',rnsd);
 		}
+	*/
 	else if(var1=="callservice") {
 		//It's Service Oriented Architecture
 		svcController.callService(req, res);
