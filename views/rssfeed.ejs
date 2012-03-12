@@ -13,7 +13,7 @@
 	<% for(var i=0;i<items.length;i++){ %>
 		<item>
 			<title><![CDATA[<%=items[i].postTitle%>]]></title>
-			<link>http://sizers.cloudfoundry.com/postview/<%=items[i].id%></link>
+			<link>http://sizers.cloudfoundry.com/postview/<%=items[i]._id%></link>
 			<author>sizers</author>
 			<pubDate><%=items[i].date1%></pubDate>
 			<description><![CDATA[<%=items[i].postContent%>]]></description>
