@@ -4,6 +4,6 @@ exports.postCate = [
                     {"key":"all","val":"All"},
                     {"key":"dev","val":"Develope"},
                     {"key":"pol","val":"Politics"},
-                    {"key":"lei","val":"Leisure"}
+                    {"key":"les","val":"Leisure"}
                     ];
 

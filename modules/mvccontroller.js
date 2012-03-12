@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var properties = require('../properties.js');
 var models = require('./models.js');
 var svcController = require('./svccontroller.js');
+var util = require('../util.js');
 
 //Prototyping Date Object 
 Date.prototype.format = function(f) { 
@@ -81,7 +82,6 @@ var mvcRoute = exports.mvcRoute = function(req, res, next){
 				}
 		 	}
 			//Blah.find({}).sort('date',-1).execFind(function(err,docs){ });
-
 			var oBind = {};
 			//if(docs.length > 0) oBind = docs[0];
 			rnsd["postlist"] = docs;
@@ -113,6 +113,33 @@ var mvcRoute = exports.mvcRoute = function(req, res, next){
 			rnsd["postview"] = docs;
 			rnsd["lcate"] = (req.query.lcate||"");
 			res.render('postview',rnsd);
+		});
+	}
+	//RSS관련
+	else if(var1=="rssfeedlist"){
+		var rnsd = new renderSeed("RSS 2.0 Feed List");
+		res.render('rssfeedlist',rnsd);
+	}
+	else if(var1=="rssfeed"){
+		var rndr = {"cate1" : util.getCateNm(var2),
+			"layout":""
+		};
+		
+		
+		mongoose.connect(properties.mongodbUrl);
+		models.blogposts.find(oSrch).sort('date',-1).limit(10).execFind( function (err, docs) {
+			mongoose.disconnect();
+			if(err){//throw err;
+				console.log(err);
+			}else{
+				for(var i=0;i<docs.length;i++){
+					docs[i]["date1"] = util.getRFC822Date(docs[i].date);
+					docs[i]["postCate1"] = util.getCateNm(docs[i].postCate);
+				}
+		 	}
+			//if(docs.length > 0) oBind = docs[0];
+			rndr["items"] = docs;
+			res.render('rssfeed',rndr);
 		});
 	}
 	else if(var1=="guestbook") res.render('guestbook',new renderSeed("Guest Book"));

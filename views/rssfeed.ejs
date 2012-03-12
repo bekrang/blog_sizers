@@ -1,5 +1,25 @@
-<xml>
-
-	<%=title%>
-
-</xml>
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+	xmlns:activity="http://activitystrea.ms/spec/1.0/" >
+	<channel>
+	<title><![CDATA[blog SIZERS - <%=cate1%> ]]></title>
+	<link>http://sizers.cloudfoundry.com/</link>
+	<description><![CDATA[blog SIZERS : a Korean Professional Software Engineer]]></description>
+	<language>ko</language>
+	<webMaster>oralhazard@gmail.com</webMaster>
+	<% for(var i=0;i<items.length;i++){ %>
+		<item>
+			<title><![CDATA[<%=items[i].postTitle%>]]></title>
+			<link>http://sizers.cloudfoundry.com/postview/<%=items[i].id%></link>
+			<author>sizers</author>
+			<pubDate><%=items[i].date1%></pubDate>
+			<description><![CDATA[<%=items[i].postContent%>]]></description>
+			<category><![CDATA[<%=items[i].postCate1%>]]></category>
+		</item>
+	<% } %>
+	</channel>
+</rss>
+ 

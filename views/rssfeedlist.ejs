@@ -1,0 +1,25 @@
+<div class="centerTitle"><%=title%></div><br/>
+
+<div id="mainpan">
+	<div class="mblock"><div class="inmblock">
+	<ul>
+<%
+	if(postCate.length==0) {
+%>
+		No Category?????
+<%
+	}
+	for(var i=0;i<postCate.length;i++){
+%>
+		<li>
+			<%=postCate[i].val%> [<%=postCate[i].key%>] - 
+			<a href="/rssfeed/<%=postCate[i].key%>">
+				http://sizers.cloudfoundry.com/rssfeed/<%=postCate[i].key%>
+			</a>
+		</li><br/>
+<%		
+	}
+%>
+	</ul>
+	</div></div>
+</div>

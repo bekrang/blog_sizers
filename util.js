@@ -3,13 +3,21 @@ var properties = require('./properties.js');
 var models = require('./modules/models.js');
 var svcController = require('./modules/svccontroller.js');
 
+var getCateNm = exports.getCateNm = function(cateKey){
+	for(var i=0;i<properties.postCate.length;i++){
+		if(properties.postCate[i].key == cateKey) return properties.postCate[i].val;
+	}
+	return "";
+}
+
+
 //Prototyping Date Object 
 Date.prototype.format = function(f) { 
 	if (!this.valueOf()) return " "; 
-  
+
 	var weekName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; 
 	var d = this; 
-	  
+	
 	return f.replace(/(yyyy|yy|MM|dd|E|hh|mm|ss|a\/p)/gi, function($1) { 
 		switch ($1) { 
 			case "yyyy": return d.getFullYear(); 
@@ -33,7 +41,7 @@ Number.prototype.zf = function(len){return this.toString().zf(len);};
 
 //It's a useful mehtod
 var dump = exports.dump = function (obj, name) {
-	var indent = "  ";
+	var indent = "	";
 	if (typeof obj == "object") {
 		var child = null;
 		var output = (name) ? indent + name + "\n" : "";
@@ -59,84 +67,45 @@ var dump = exports.dump = function (obj, name) {
 	}
 };
 
+//Making RFC822DATE
+var getRFC822Date = exports.getRFC822Date = function (oDate)
+{
+	var aMonths = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+					"Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
 
-//Routing?? or MVC Controlling??
-var router = exports.router = function(req, res, next){
-	var var1="",var2="",var3="";
-	
-	//Am I doing the right thing??
-	if(req.params.var1) var1 = req.params.var1;
-	if(req.params.var2) var2 = req.params.var2;
-	if(req.params.var3) var3 = req.params.var3;
+	var aDays = new Array( "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+	var dtm = new String();
+			
+	dtm = aDays[oDate.getDay()] + ", ";
+	dtm += padWithZero(oDate.getDate()) + " ";
+	dtm += aMonths[oDate.getMonth()] + " ";
+	dtm += oDate.getFullYear() + " ";
+	dtm += padWithZero(oDate.getHours()) + ":";
+	dtm += padWithZero(oDate.getMinutes()) + ":";
+	dtm += padWithZero(oDate.getSeconds()) + " " ;
+	dtm += getTZOString(oDate.getTimezoneOffset());
+	return dtm;
+}
+//Pads numbers with a preceding 0 if the number is less than 10.
+function padWithZero(val)
+{
+	if (parseInt(val) < 10)
+	{
+		return "0" + val;
+	}
+	return val;
+}
 
-	if(var1=="") res.render('index',{title:"MAIN"});
-	else if(var1=="callservice") {
-		//It's Service Oriented Architecture
-		svcController.callService(req, res);
-	}
-	else if(var1=="postlist") {
-		var oSrch = {};
-		var title = "POST LIST";
-		if(var2 != "all") 	oSrch = {"postCate":var2};
-		if(var2=="all") title += " - ALL";
-		else if(var2=="dev") title += " - Develope";
-		else if(var2=="pol") title += " - Politics";
-		else if(var2=="les") title += " - Leisure";
-		mongoose.connect(properties.mongodbUrl);
-		models.blogposts.find(oSrch).sort('date',-1).execFind( function (err, docs) {
-			mongoose.disconnect();
-			if(err){//throw err;
-				console.log(err);
-			}else{
-				//oOutput["blogposts"] = docs;// docs is an array
-				console.log('rietrived!');
-				for(var i=0;i<docs.length;i++){
-					docs[i]["date1"] = docs[i].date.format("yyyy-MM-dd HH:mm:ss");
-				}
-		 	}
-			//Blah.find({}).sort('date',-1).execFind(function(err,docs){ });
-
-			var oBind = {};
-			//if(docs.length > 0) oBind = docs[0];
-			oBind["title"] = title;
-			oBind["postlist"] = docs;
-			oBind["lcate"] = var2;
-			res.render('postlist',oBind);
-		});
-	}
-	else if(var1=="postview") {
-		if(!var2) {
-			res.end();
-			return;
-		}
-		mongoose.connect(properties.mongodbUrl);
-		models.blogposts.findOne({_id:var2}, function (err, docs) {
-			mongoose.disconnect();
-			if(err){//throw err;
-				console.log(err);
-			}else{
-				//oOutput["blogposts"] = docs;// docs is an array
-				console.log('rietrived! content');
-				docs["date1"] = docs.date.format("yyyy-MM-dd HH:mm:ss");
-				docs["postContent"] = docs.postContent.replace(/\r\n/gi,"<br/>");
-		 	}
-			var oBind = {};
-			//if(docs.length > 0) oBind = docs[0];
-			oBind["title"] = docs.postTitle;
-			oBind["postview"] = docs;
-			oBind["lcate"] = (req.query.lcate||"");
-			res.render('postview',oBind);
-		});
-	}
-	else if(var1=="guestbook") res.render('guestbook',{title:"Guest Book"});
-	//else if(var1=="guestbook2") res.render('guestbook2',{title:"Guest Book"});
-	else if(var1=="profile") res.render('profile',{title:"My Profile"});
-	else if(var1=="admin") {
-		if(var2!=properties.adminToken) {
-			res.end("Admin authentication is not valid!!");return;
-		}
-		res.render('admin',{title:"Admin",adminToken:var2});
-	}
-	else next();
-};
-
+/* accepts the client's time zone offset from GMT in minutes as a parameter.
+returns the timezone offset in the format [+|-}DDDD */
+function getTZOString(timezoneOffset)
+{
+	var hours = Math.floor(timezoneOffset/60);
+	var modMin = Math.abs(timezoneOffset%60);
+	var s = new String();
+	s += (hours > 0) ? "-" : "+";
+	var absHours = Math.abs(hours)
+	s += (absHours < 10) ? "0" + absHours :absHours;
+	s += ((modMin == 0) ? "00" : modMin);
+	return(s);
+}
