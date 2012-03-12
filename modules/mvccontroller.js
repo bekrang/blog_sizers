@@ -125,6 +125,8 @@ var mvcRoute = exports.mvcRoute = function(req, res, next){
 			"layout":""
 		};
 		
+		var oSrch = {};
+		if(var2 || var2 != "all") 	oSrch = {"postCate":var2};
 		
 		mongoose.connect(properties.mongodbUrl);
 		models.blogposts.find(oSrch).sort('date',-1).limit(10).execFind( function (err, docs) {
