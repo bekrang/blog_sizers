@@ -1,0 +1,193 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+	<title>BlogSizers :: <%=title%></title>
+	<link type="text/css" href="/stylesheets/jqui_smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+	<link type="text/css" rel="stylesheet" href="/stylesheets/layout-default.css" />
+	<link type="text/css" rel="stylesheet" href="/stylesheets/blogTemplateGrey.css" />
+	<style type="text/css">
+	/* These style is used for layout jquery plugin */
+	html, body {
+		background:	#666;
+		width:		100%;
+		height:		100%;					
+		padding:	0;
+		margin:		0;
+		overflow:	auto; /* when page gets too small */
+	}
+	#container {
+		background:	#999;
+		height:		100%;
+		margin:		0 auto;
+		width:		100%;
+		max-width:	1200px;
+		min-width:	800px;
+		_width:		800px; /* min-width for IE6 */
+	}
+	.pane {
+		display:	none; /* will appear when layout inits */
+	}
+	
+	/* These style for my own */
+	.centerTitle { font-size:20px;font-weight:bold;}
+	
+	
+	
+	
+
+	</style>
+
+
+	<script type="text/javascript" src="/javascripts/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery-ui-1.8.18.custom.min.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery.layout.js"></script>
+	<script type="text/javascript" src="/javascripts/json2.js"></script>
+	<script type="text/javascript" src="/javascripts/commonUtil.js"></script>
+	
+	
+	<script type="text/javascript">
+	var myLayout;
+	
+	$(document).ready(function () {
+		myLayout = $('#container').layout({
+			useStateCookie: true, 
+			//cookie__name:  "_container",
+			cookie__path: "/",
+			north__size : 132,
+			west__size : 220,
+			spacing_open : 8, // ALL panes
+			spacing_closed : 14, // ALL panes
+			north__resizable : false,
+			west__resizable : false,
+			east__initClosed : true,
+			tmp : "tmp"
+		});
+		myLayout.saveCookie( "", { path: "", expires: -1 }); 
+
+
+
+
+	});
+
+	</script>
+
+</head>
+<body>
+
+
+<div id="container">
+
+	<!-- CENTER -->
+	<div class="pane ui-layout-center" style="padding:10px">
+		<%-body%>
+	</div>
+
+
+
+
+
+
+	<!-- NORTH -->
+	<div class="pane ui-layout-north" style="padding:0px"> 
+		<div id="upperblock">
+			<div class="upblock">
+				<h1>blog. SIZERS : a Korean Professional Software Engineer</h1>
+				<br/>
+				<h2><a href="/">http://sizers.cloudfoundry.com</a> 
+					(twitter:<a href="https://twitter.com/#!/oralhazard" target="_blank">@oralhazard</a> &nbsp;  
+					github:<a href="https://github.com/sizers" target="_blank">https://github.com/sizers</a>)
+				</h2>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- SOUTH -->
+	<!--
+	<div class="pane ui-layout-south" style="padding:0px">
+		<div id="bottompan">
+			<p><a href="#">small</a> | <a href="#">bottom</a> | <a href="#">menu</a> | <a href="#">without</a> | <a href="#">any</a> | <a href="#">effects</a></p>
+
+			&copy;2007 Mega best website. Design template: <a href="http://ruslog.com/design/">Rus Log</a>
+		</div>
+	</div>
+
+	<div class="pane ui-layout-east" style="padding:0px">
+
+	</div>
+	-->
+
+	<!-- WEST -->
+	<div class="pane ui-layout-west" style="padding:0px;overflow:hidden;background-color:#eee">
+
+			<div class="lblock">
+				<h3>MENU</h3>
+				<ul>
+					<li><a href="/">Home</a></li>
+					<br/>
+					<li><a href="/postlist/all">Post Category</a></li>
+					<%for(var i=0;i<postCate.length;i++){%>
+						<li><a href="/postlist/<%=postCate[i].key%>">- <%=postCate[i].val%></a></li>
+					<%}%>
+					<!-- 
+					<li><a href="/postlist/all">- All</a></li>
+					<li><a href="/postlist/dev">- Develope</a></li>
+					<li><a href="/postlist/pol">- Politics</a></li>
+					<li><a href="/postlist/les">- Leisure</a></li>
+					 -->
+					<br/>
+					<li><a href="/guestbook">Guest Book</a></li>
+					<!--<li><a href="/guestbook2">GUEST_BOOK2</a></li>-->
+					<li><a href="/profile">My Profile</a></li>
+					<br/>
+				</ul>
+			</div>
+
+			<div class="lblock">
+				<h3>LINK</h3>
+				<ul>
+					<li><a href="http://www.okjsp.pe.kr/" target="_blank">OKJSP</a></li>
+					<li><a href="http://www.taeyo.pe.kr/" target="_blank">TAEYO</a></li>
+					<li><a href="http://www.devpia.com/" target="_blank">DEVPIA</a></li>
+					<li><a href="http://phpschool.com/" target="_blank">PHPSCHOOL</a></li>
+					<li><a href="http://it.nodong.net/" target="_blank">한국IT산업노조</a></li>
+					<br/>
+				</ul>
+			</div>
+			<!--
+			<div class="lblock">
+				<h3>MENU 3:</h3>
+				<ul class="less">
+					<li><a href="#">&bull; Category</a></li>
+					<li><a href="#">&bull; Category 2</a></li>
+					<li><a href="#" class="current">&bull; Lorem ipsum dolor sit amet, consectetuer adipiscing elit</a></li>
+					<li><a href="#">&bull; super category with long description</a></li>
+					<li><a href="#">&bull; CATEGORY 5</a></li>
+					<li><a href="#">&bull; category 6</a></li>
+					<li><a href="#">&bull; category 7</a></li>
+					<li><a href="#">&bull; Proin eu est ut mi ornare placerat</a></li>
+					<li><a href="#">&bull; Suspendisse felis odio, elementum non, blandit vel, auctor eget, nunc</a></li>
+					<li><a href="#">&bull; Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus</a></li>
+					<li><a href="#">&bull; Curabitur facilisis, nulla a tincidunt gravida, leo pede porttitor odio, ac adipiscing felis leo sit amet justo</a></li>
+				</ul>
+			</div>
+			<div class="lblock">
+				<p>&nbsp;Simple text block. Here You can write any news, remarks and other information</p>
+			</div>
+			<div class="lblock">
+				<h3>search:</h3>
+				<form method="post" action="#">
+				<div>
+				<input type="text" />
+				<input type="submit" value="GO" />
+				</div>
+				</form>
+			</div>
+			-->
+	</div>
+</div>
+</body>
+</html>

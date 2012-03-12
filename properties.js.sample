@@ -1,0 +1,9 @@
+exports.adminToken = "1234";
+exports.mongodbUrl = "mongodb://blabla";
+exports.postCate = [
+                    {"key":"all","val":"All"},
+                    {"key":"dev","val":"Develope"},
+                    {"key":"pol","val":"Politics"},
+                    {"key":"lei","val":"Leisure"}
+                    ];
+
