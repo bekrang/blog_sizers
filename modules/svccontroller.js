@@ -57,8 +57,7 @@ var callService = exports.callService = function(req, res){
 					res.end(JSON.stringify(oOutput));
 				});
 			}
-		} 
-		if(oInput.svcId == "delPost"){
+		} else if(oInput.svcId == "delPost"){
 
 			if(oInput.adminToken != properties.adminToken) {
 				res.end("Admin authentication is not valid!!");
@@ -75,8 +74,7 @@ var callService = exports.callService = function(req, res){
 				}
 				res.end();
 			});
-		} 
-		if(oInput.svcId == "getPostList"){
+		} else if(oInput.svcId == "getPostList"){
 			mongoose.connect(properties.mongodbUrl);
 			models.blogposts.find({}).sort('date',-1).execFind(function (err, docs) {
 				mongoose.disconnect();
@@ -89,7 +87,24 @@ var callService = exports.callService = function(req, res){
 			 	}
 				res.end(JSON.stringify(oOutput));
 			});
-		}
+		} /*else if(oInput.svcId == "sendTrackback"){
+			var http = require('http');
+			var client = http.createClient(80, 'http://www.example.com'); // to access this url i need to put basic auth.
+
+			var request = client.request('GET', '/', {'host': 'www.example.com'});
+			request.end();
+			request.on('response', function (response) {
+				console.log(response);
+				/ *
+			  console.log('STATUS: ' + response.statusCode);
+			  console.log('HEADERS: ' + JSON.stringify(response.headers));
+			  response.setEncoding('utf8');
+			  response.on('data', function (chunk) {
+			    console.log('BODY: ' + chunk);
+			  });
+				* /
+			});
+		} */
 	}
 	else res.end();
 }
