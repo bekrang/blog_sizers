@@ -34,14 +34,34 @@ $(document).ready(function(){
 	//트랙백 보내기
 	$("#btnSendTrackback").bind("click",function(){
 		if(!confirm("Are You surely want to Send Trackback??")) return;
-		var oInput = $("#blogInputFrm").serializeJSON(",",true);
+		var oInput = $("#blogInputFrm").serializeJSON(",",false);
 		if(!oInput._id||oInput._id.lenght < 2) {
 			alert("No post is selected!!");
 			return;
 		}
+		//TO DO 이것은 크로스브라우징.. @@;;
+		alert(oInput.trackbackUrl);
+		$.ajax({
+			async : false,
+			type: "post",
+			url: oInput.trackbackUrl,
+			data: {
+				"url":"http://sizers.cloudfoundry.com/postview/"+oInput._id,
+				"title":oInput.postTitle,
+				"blog_name":"blog. SIZERS",
+				"excerpt":oInput.postContent.substring(0,30)
+			},
+			success : function (result) {
+				alert(result);
+			},
+			error: function(xhr, status, error) {
+				alert("Failed to Call Quick Ajax Svc");
+				//var err = eval!("(" + xhr.responseText + ")");
+				//$.growlUI('Error', err.Message, 20000);
+			}
+		});
 		
-		//TO DO Logic Here
-	}
+	});
 	
 	
 	$("#blogPostList div").live("click",function(){
