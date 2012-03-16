@@ -13,20 +13,22 @@ var blogposts = new Schema({
 	date  :Date
 });
 
-var trackback_in = new Schema({
+var trackbacks = new Schema({
 	id : ObjectId,
+	kind : String, //"I:inbound, O:outbound"
 	postId : String,
 	url : String,
 	title : String,
 	blog_name : String,
-	excerpt : String
+	excerpt : String,
+	date : Date
 });
 
 mongoose.model("blogposts", blogposts);
 exports.blogposts = mongoose.model("blogposts");
 
-mongoose.model("trackback_in", trackback_in);
-exports.trackback_in = mongoose.model("trackback_in");
+mongoose.model("trackbacks", trackbacks);
+exports.trackbacks = mongoose.model("trackbacks");
 /*
 이것으로 모듈화 끝.
 

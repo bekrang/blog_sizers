@@ -106,8 +106,32 @@ var commonUtil = {
 			}
 		});
 	},
-	
-	
-	
+	makeForm : function (action, paramObj, target){
+		jqForm = $("<form/>");
+		for(var key in paramObj){  
+			jqForm.append($("<input type='hidden' name='"+ key +"' value='"+ paramObj[key] +"'/>"));
+		}
+		jqForm.attr("action",action);
+		jqForm.attr("method","post");
+		if(target) jqForm.attr("target",target);// if you want to submit to specific target
+		//$("body").append(jqForm);
+		//jqForm.trigger("submit");
+		//jqForm.remove();
+		return jqForm;
+	},
+	/*
+	dynamicSubmit = function (url, paramObj, name){
+		jqForm = $("<form/>");
+		for(var key in paramObj){  
+			jqForm.append($("<input type='hidden' name='"+ key +"' value='"+ paramObj[key] +"'/>"));
+		}
+		jqForm.attr("action",url);
+		jqForm.attr("method","post");
+		if(name) jqForm.attr("target",name);// if you want to submit to specific target
+		$("body").append(jqForm);
+		jqForm.trigger("submit");
+		jqForm.remove();
+	}
+	*/
 	tmp:"tmp"
 }

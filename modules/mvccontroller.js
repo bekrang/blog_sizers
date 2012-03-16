@@ -112,6 +112,7 @@ var mvcRoute = exports.mvcRoute = function(req, res, next){
 			rnsd["title"] = docs.postTitle;
 			rnsd["postview"] = docs;
 			rnsd["lcate"] = (req.query.lcate||"");
+			rnsd["trackbacks"] = [];
 			res.render('postview',rnsd);
 		});
 	}
@@ -147,25 +148,26 @@ var mvcRoute = exports.mvcRoute = function(req, res, next){
 	else if(var1=="guestbook") res.render('guestbook',new renderSeed("Guest Book"));
 	//else if(var1=="guestbook2") res.render('guestbook2',{title:"Guest Book"});
 	else if(var1=="profile") res.render('profile',new renderSeed("My Profile"));
-	else if(var1=="trackback_in") {
+	else if(var1=="trackback") {
 		res.header("Content-Type","text/xml");
 		res.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<response>\n");
-		
-		header("Content-Type: text/xml");
-		echo("<?xml version=\"1.0\" encoding=\"euc-kr\"?>\n<response>\n");
+		console.log("header printed");
+		//header("Content-Type: text/xml");
+		//echo("<?xml version=\"1.0\" encoding=\"euc-kr\"?>\n<response>\n");
 		
 		if(!var2 || !req.body.url || !req.body.title || !req.body.blog_name || !req.body.excerpt){
 			res.end("<error>1</error>\n<message>Missing Parameter(s)</message>\n</response>");
 		} else {
-			var trackback_in = new models.trackback_in();
+			var trackbacks = new models.trackbacks();
 
-			trackback_in.postId= var2;
-			trackback_in.url= req.body.url;
-			trackback_in.title = req.body.title;
-			trackback_in.blog_name = req.body.blog_name;
-			trackback_in.excerpt = req.body.excerpt;
+			trackbacks.postId= var2;
+			trackbacks.url = req.body.url;
+			trackbacks.kind = "I";
+			trackbacks.title = req.body.title;
+			trackbacks.blog_name = req.body.blog_name;
+			trackbacks.excerpt = req.body.excerpt;
 			mongoose.connect(properties.mongodbUrl);
-			trackback_in.save(function(err){
+			trackbacks.save(function(err){
 				mongoose.disconnect();
 				if(err){//throw err;
 					console.log(err);

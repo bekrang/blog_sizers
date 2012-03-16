@@ -39,6 +39,48 @@ $(document).ready(function(){
 			alert("No post is selected!!");
 			return;
 		}
+		
+		var jqForm = commonUtil.makeForm(oInput.trackbackUrl, {
+			"url":"http://sizers.cloudfoundry.com/postview/"+oInput._id,
+			"title":oInput.postTitle,
+			"blog_name":"sizers",
+			"excerpt":oInput.postContent.substring(0,50)+"..."
+		},"_blank");
+		$("body").append(jqForm);
+		jqForm.submit();
+		/*
+		jqForm.ajaxSubmit({
+	        //target:        '#output2',   // target element(s) to be updated with server response 
+	        beforeSubmit:  function(){alert('ttt')},//showRequest,  // pre-submit callback 
+	        success : function(responseText, statusText){//, xhr, $form)  { 
+	            // for normal html responses, the first argument to the success callback 
+	            // is the XMLHttpRequest object's responseText property 
+	         
+	            // if the ajaxSubmit method was passed an Options Object with the dataType 
+	            // property set to 'xml' then the first argument to the success callback 
+	            // is the XMLHttpRequest object's responseXML property 
+	         
+	            // if the ajaxSubmit method was passed an Options Object with the dataType 
+	            // property set to 'json' then the first argument to the success callback 
+	            // is the json data object returned by the server 
+	         
+	            alert('status: ' + statusText + '\n\nresponseText: \n' + responseText + 
+	                '\n\nThe output div should have already been updated with the responseText.'); 
+	        } 
+
+	        //success:       showResponse  // post-submit callback 	 
+	        // other available options: 
+	        //url:       url         // override for form's 'action' attribute 
+	        //type:      type        // 'get' or 'post', override for form's 'method' attribute 
+	        //dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+	        //clearForm: true        // clear all form fields after successful submit 
+	        //resetForm: true        // reset the form after successful submit 
+	        // $.ajax options can be used here too, for example: 
+	        //timeout:   3000 
+		}); 
+		*/
+		jqForm.remove();
+		/*
 		//TO DO 이것은 크로스브라우징.. @@;;
 		alert(oInput.trackbackUrl);
 		$.ajax({
@@ -60,7 +102,7 @@ $(document).ready(function(){
 				//$.growlUI('Error', err.Message, 20000);
 			}
 		});
-		
+		*/
 	});
 	
 	
@@ -89,26 +131,6 @@ function getPostList(){
 	});
 }
 
-function dynamicJqFormSubmit(url, paramObj, name, successFunc){
-	jqForm = $("<form/>");
-	for(var key in paramObj){  
-		jqForm.append($("<input type='hidden' name='"+ key +"' value='"+ paramObj[key] +"'/>"));
-	}
-	jqForm.attr("action",url);
-	jqForm.attr("method","post");
-	if(name) jqForm.attr("target",name);// if you want to submit to specific target
-	$("body").append(jqForm);
-	//jqForm.trigger("submit");
-	$("#frm").ajaxForm({
-		dataType:'xml',
-		//beforeSubmit: frmCheck, //폼유효성 검사
-		success:function(data, rst){   
-			//$('#obj').innerHTML = data;
-			alert(data);
-		}
-	});
-	jqForm.remove();
-}
 </script>
 
 
@@ -130,7 +152,10 @@ function dynamicJqFormSubmit(url, paramObj, name, successFunc){
 	</select><br/>
 	<input type="text" name="postTitle" style="width:95%"/><br/>
 	<textarea name="postContent"  style="width:95%;height:300px"></textarea><br/>
-	<label style="width:20%">트랙백</label><input type="text" name="trackbackUrl" style="width:75%">
+	<label style="width:20%">트랙백</label><br/>
+	트랙백URL : <input type="text" name="trackbackUrl" style="width:75%"><br/>
+	제목 : <input type="text" name="trackbackTitle" style="width:75%"><br/>
+	포스트URL : <input type="text" name="trackbackPostUrl" style="width:75%"><br/>
 </div>
 <br/><br/>
 <b>Post List</b><br/>

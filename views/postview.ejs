@@ -1,8 +1,22 @@
 <script>
+	var g4_is_gecko  = navigator.userAgent.toLowerCase().indexOf("gecko") != -1;
+	var g4_is_ie     = navigator.userAgent.toLowerCase().indexOf("msie") != -1;
 	$(document).ready(function(){
 		//$("#btnList").button();
 		$("#btnList").bind("click",function(){
 			location.href="/postlist/"+("<%=lcate%>"||"all");
+		});
+		
+		$( "#tabs" ).tabs();
+
+		$(".clipboard").bind("click",function(){
+		    if (g4_is_gecko) {
+		        prompt("Copy, Press Ctrl+C", $(this).text());
+		    }
+		    else if (g4_is_ie) {
+		        window.clipboardData.setData("Text", $(this).text());
+		        alert("Copied into ClipBoard.\n"+ $(this).text());
+		    }
 		});
 	});
 </script>
@@ -16,21 +30,55 @@
 			<p><%-postview.postContent%></p>
 			<div class="comments">posted on <%=postview.date1%></div>
 	</div></div>
-</div><br/><br/>
+</div>
 
+<DIV id=tabs>
+	<UL>
+		<LI><A href="#tabs-1">Social Reply</A></LI>
+		<LI><A href="#tabs-2">Trackback</A></LI>
+	</UL>
+	<DIV id=tabs-1>
+		<div id="disqus_thread"></div>
+		<script type="text/javascript">
+		    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+		    var disqus_shortname = 'blogsizers'; // required: replace example with your forum shortname
+			var disqus_url = 'http://sizers.cloudfoundry.com/postview/<%=postview._id%>';
+		    /* * * DON'T EDIT BELOW THIS LINE * * */
+		    (function() {
+		        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		    })();
+		</script>
+	
+	</DIV>
+	<DIV id=tabs-2>
+		Trackback address : <span class="clipboard">http://sizers.cloudfoundry.com/trackback/<%=postview._id%></span></br>
+		＊Sended Trackbacks :</br>
+		
+<%
+	for(var i=0;i<trackbacks.length;i++)
+	if(trackbacks[i].kind=="I"){
+	
+%>
+		<li><a href="<%=trackbacks[i].url%>" target="_blank">
+			<%=trackbacks[i].title%></a></li>
+<%		
+	}
+%>
+		</br>
+		＊Received Trackbacks :</br>
+<%
+	for(var i=0;i<trackbacks.length;i++)
+	if(trackbacks[i].kind=="O"){
+	
+%>
+		<li><a href="<%=trackbacks[i].url%>" target="_blank">
+			<%=trackbacks[i].title%></a></li>
+<%		
+	}
+%>
+	</DIV>
+</DIV>
 
-
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'blogsizers'; // required: replace example with your forum shortname
-	var disqus_url = 'http://sizers.cloudfoundry.com/postview/<%=postview._id%>';
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
 
