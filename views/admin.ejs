@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/javascripts/jquery.form.js"></script>
 <script>
 var oPostList = [];
 
@@ -30,6 +31,39 @@ $(document).ready(function(){
 		});
 	});
 	
+	//트랙백 보내기
+	$("#btnSendTrackback").bind("click",function(){
+		if(!confirm("Are You surely want to Send Trackback??")) return;
+		var oInput = $("#blogInputFrm").serializeJSON(",",false);
+		if(!oInput._id||oInput._id.lenght < 2) {
+			alert("No post is selected!!");
+			return;
+		}
+		//TO DO 이것은 크로스브라우징.. @@;;
+		alert(oInput.trackbackUrl);
+		$.ajax({
+			async : false,
+			type: "post",
+			url: oInput.trackbackUrl,
+			data: {
+				"url":"http://sizers.cloudfoundry.com/postview/"+oInput._id,
+				"title":oInput.postTitle,
+				"blog_name":"blog. SIZERS",
+				"excerpt":oInput.postContent.substring(0,30)
+			},
+			success : function (result) {
+				alert(result);
+			},
+			error: function(xhr, status, error) {
+				alert("Failed to Call Quick Ajax Svc");
+				//var err = eval!("(" + xhr.responseText + ")");
+				//$.growlUI('Error', err.Message, 20000);
+			}
+		});
+		
+	});
+	
+	
 	$("#blogPostList div").live("click",function(){
 		for(var i=0;i<oPostList.length;i++){
 			if(oPostList[i]._id == this.id){
@@ -55,14 +89,36 @@ function getPostList(){
 	});
 }
 
+function dynamicJqFormSubmit(url, paramObj, name, successFunc){
+	jqForm = $("<form/>");
+	for(var key in paramObj){  
+		jqForm.append($("<input type='hidden' name='"+ key +"' value='"+ paramObj[key] +"'/>"));
+	}
+	jqForm.attr("action",url);
+	jqForm.attr("method","post");
+	if(name) jqForm.attr("target",name);// if you want to submit to specific target
+	$("body").append(jqForm);
+	//jqForm.trigger("submit");
+	$("#frm").ajaxForm({
+		dataType:'xml',
+		//beforeSubmit: frmCheck, //폼유효성 검사
+		success:function(data, rst){   
+			//$('#obj').innerHTML = data;
+			alert(data);
+		}
+	});
+	jqForm.remove();
+}
 </script>
 
 
-<div>Blog Management</div>
+<div class="centerTitle">Blog Admin</div><br/>
+
 <br/><br/>
 <input type="button" id="btnInitForm" value="Init"/>
 <input type="button" id="btnSavePost" value="Save"/>
 <input type="button" id="btnDelPost" value="Delete"/>
+<input type="button" id="btnSendTrackback" value="Send Trackback"/>
 <br/><br/>
 <div id="blogInputFrm">
 	<input type="hidden" id="adminToken" name="adminToken" value="<%=adminToken%>"/>
@@ -74,7 +130,7 @@ function getPostList(){
 	</select><br/>
 	<input type="text" name="postTitle" style="width:95%"/><br/>
 	<textarea name="postContent"  style="width:95%;height:300px"></textarea><br/>
-	
+	<label style="width:20%">트랙백</label><input type="text" name="trackbackUrl" style="width:75%">
 </div>
 <br/><br/>
 <b>Post List</b><br/>
