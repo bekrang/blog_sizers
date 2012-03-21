@@ -40,6 +40,13 @@ $(document).ready(function(){
 			return;
 		}
 		
+		//Call Service
+		commonUtil.callService("sendTrackback",oInput ,true, function(output){
+			alert(output);
+			//getPostList();
+		});
+		/*
+		No 2
 		var jqForm = commonUtil.makeForm(oInput.trackbackUrl, {
 			"url":"http://sizers.cloudfoundry.com/postview/"+oInput._id,
 			"title":oInput.postTitle,
@@ -48,7 +55,9 @@ $(document).ready(function(){
 		},"_blank");
 		$("body").append(jqForm);
 		jqForm.submit();
+		*/
 		/*
+		No 1
 		jqForm.ajaxSubmit({
 	        //target:        '#output2',   // target element(s) to be updated with server response 
 	        beforeSubmit:  function(){alert('ttt')},//showRequest,  // pre-submit callback 

@@ -25,18 +25,22 @@ var httpRequest = exports.httpRequest = {
 		  // Set up the request
 		  var post_req = http.request(post_options, function(res) {
 		      res.setEncoding('utf8');
+		      var resp_data = "";
+		      /*
 		      res.on('data', function (chunk) {
 		          console.log('Response: ' + chunk);
 		      });
-		      /*
+		      */
 		      res.on('data', function (chunk) {
 		          //console.log('Response: ' + chunk);
 		          resp_data += chunk;
 		      });
 		      res.on('end',function(){
-		      	
+		    	if(callback){
+		    		callback(resp_data);
+		    	}
 		      });
-		      */
+		      
 		  });
 
 		  // post the data

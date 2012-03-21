@@ -87,7 +87,21 @@ var callService = exports.callService = function(req, res){
 			 	}
 				res.end(JSON.stringify(oOutput));
 			});
-		} /*else if(oInput.svcId == "sendTrackback"){
+		} else if(oInput.svcId == "sendTrackback"){
+			var httpRequest = require('./httpRequest.js').httpRequest;
+			
+			var postData = 		{
+				"url":"http://sizers.cloudfoundry.com/postview/"+oInput._id,
+				"title":oInput.postTitle,
+				"blog_name":"sizers",
+				"excerpt":oInput.postContent.substring(0,50)+"..."
+			}
+
+			httpRequest.request(oInput.trackbackUrl, "80", postData, function(rtnData){
+				console.log(rtnData);
+				res.end(JSON.stringify(rtnData));
+			});
+			/*
 			var http = require('http');
 			var client = http.createClient(80, 'http://www.example.com'); // to access this url i need to put basic auth.
 
@@ -104,7 +118,8 @@ var callService = exports.callService = function(req, res){
 			  });
 				* /
 			});
-		} */
+			*/
+		} 
 	}
 	else res.end();
 }
