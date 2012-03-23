@@ -36,6 +36,7 @@ var httpRequest = exports.httpRequest = {
 		          resp_data += chunk;
 		      });
 		      res.on('end',function(){
+				//console.log(resp_data);
 		    	if(callback){
 		    		callback(resp_data);
 		    	}
