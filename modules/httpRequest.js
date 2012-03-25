@@ -3,9 +3,55 @@
 // We need this to build our post string
 var querystring = require('querystring');
 var http = require('http');
-var fs = require('fs');
+//var fs = require('fs');
+
 
 var httpRequest = exports.httpRequest = {
+	
+	request : function(url, port, jsonData, callback){   
+		// Build the post string from an object   
+		url = url.replace("http://",'').replace("https://",'');
+		var host = url.split("/")[0];
+		var path = url.replace(host,'');
+		
+		var post_data = jsonData;/*{
+			"url":"http://sizers.cloudfoundry.com/postview/1234",
+			"title":"임시타이틀",
+			"blog_name":"sizers",
+			"excerpt":"test..."
+		};*/
+		post_data = querystring.stringify(post_data);
+
+		// An object of options to indicate where to post to       http://blog.naver.com/tb/oralhazard/30133536689
+		var post_options = {       
+			host: host,//'sizers.cloudfoundry.com',       
+			port: port,       
+			path: path,//'/stylesheets/style.css',       
+			method: 'POST',       
+			headers: {           
+				'Content-Type': 'application/x-www-form-urlencoded',           
+				'Content-Length': post_data.length       
+			}   
+		};    
+		// Set up the request   
+		var post_req = http.request(post_options, function(res) {       
+			res.setEncoding('utf8');
+			var res_data = "";
+			res.on('data', function (chunk) {           
+				res_data += chunk;
+				//console.log('Response: ' + chunk);      
+			});   
+			res.on('end',function(){
+				//console.log(res_data);
+				if(callback) callback(res_data);
+			});
+		});    // post the data   
+		
+		post_req.write(post_data);   
+		post_req.end();  
+	}  
+		
+	/*
 	request : function(url, port, jsonData, callback){
 		  // Build the post string from an object
 		  var post_data = querystring.stringify(jsonData);
@@ -26,11 +72,11 @@ var httpRequest = exports.httpRequest = {
 		  var post_req = http.request(post_options, function(res) {
 		      res.setEncoding('utf8');
 		      var resp_data = "";
-		      /*
+		      / *
 		      res.on('data', function (chunk) {
 		          console.log('Response: ' + chunk);
 		      });
-		      */
+		      * /
 		      res.on('data', function (chunk) {
 		          //console.log('Response: ' + chunk);
 		          resp_data += chunk;
@@ -48,29 +94,5 @@ var httpRequest = exports.httpRequest = {
 		  post_req.write(post_data);
 		  post_req.end();
 	}
+	*/
 }
-
-/*
- later
-
-// This is an async file read
-fs.readFile('LinkedList.js', 'utf-8', function (err, data) {
-  if (err) {
-    // If this were just a small part of the application, you would
-    // want to handle this differently, maybe throwing an exception
-    // for the caller to handle. Since the file is absolutely essential
-    // to the program's functionality, we're going to exit with a fatal
-    // error instead.
-    console.log("FATAL An error occurred trying to read in the file: " + err);
-    process.exit(-2);
-  }
-  // Make sure there's data before we post it
-  if(data) {
-    PostCode(data);
-  }
-  else {
-    console.log("No data to post");
-    process.exit(-1);
-  }
-});
-*/

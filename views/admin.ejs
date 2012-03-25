@@ -15,7 +15,7 @@ $(document).ready(function(){
 			//alert(output);
 			getPostList();
 		});
-	});	
+	});
 	
 	$("#btnDelPost").bind("click",function(){
 		if(!confirm("Are You surely want to delete this post?")) return;
@@ -34,7 +34,7 @@ $(document).ready(function(){
 	//트랙백 보내기
 	$("#btnSendTrackback").bind("click",function(){
 		if(!confirm("Are You surely want to Send Trackback??")) return;
-		var oInput = $("#blogInputFrm").serializeJSON(",",false);
+		var oInput = $("#blogInputFrm").serializeJSON(",",true);
 		if(!oInput._id||oInput._id.lenght < 2) {
 			alert("No post is selected!!");
 			return;
@@ -87,8 +87,9 @@ $(document).ready(function(){
 	        // $.ajax options can be used here too, for example: 
 	        //timeout:   3000 
 		}); 
-		*/
+		
 		jqForm.remove();
+		*/
 		/*
 		//TO DO 이것은 크로스도메인.. @@;;
 		alert(oInput.trackbackUrl);

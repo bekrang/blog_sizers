@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var properties = require('../properties.js');
-var models = require('../modules/models.js');
-
-
+var models = require('./models.js');
+var xml2json = require('./xml2json.js').xml2json;
+var httpRequest = require('./httpRequest.js').httpRequest;
 
 var callService = exports.callService = function(req, res){
 	var oInput = {};
@@ -88,18 +88,40 @@ var callService = exports.callService = function(req, res){
 				res.end(JSON.stringify(oOutput));
 			});
 		} else if(oInput.svcId == "sendTrackback"){
-			var httpRequest = require('./httpRequest.js').httpRequest;
 			
 			var postData = 		{
-				"url":"http://sizers.cloudfoundry.com/postview/"+oInput._id,
-				"title":oInput.postTitle,
+				"url":"http://sizers.cloudfoundry.com/postview/"+unescape(oInput._id),
+				"title":unescape(oInput.postTitle),
 				"blog_name":"sizers",
-				"excerpt":oInput.postContent.substring(0,50)+"..."
+				"excerpt":unescape(oInput.postContent).substring(0,50)+"..."
 			}
 
-			httpRequest.request(oInput.trackbackUrl, "80", postData, function(rtnData){
-				console.log(rtnData);
-				res.end(JSON.stringify(rtnData));
+			httpRequest.request(unescape(oInput.trackbackUrl), "80", postData, function(rtnData){
+				//console.log(rtnData);
+				//res.end(JSON.stringify(rtnData));
+				var oRtn = xml2json.parser(rtnData);
+				console.log(oRtn);
+				if(oRtn.response && oRtn.response.error == 0 && unescape(oInput.trackbackTitle)){
+					var otrackback = new models.trackbacks();
+					otrackback.kind= "O";
+					otrackback.postId= unescape(unescape(oInput._id));
+					otrackback.url = unescape(unescape(oInput.trackbackPostUrl));
+					otrackback.title = unescape(unescape(oInput.trackbackTitle));
+					otrackback.blog_name = unescape("sizers");
+					otrackback.excerpt = unescape(unescape(oInput.postContent).substring(0,50)+"...");
+					otrackback.date = new Date();
+					mongoose.connect(properties.mongodbUrl);
+					otrackback.save(function(err){
+						mongoose.disconnect();
+						if(err){//throw err;
+							console.log(err);
+							oOutput.retCd = "ER";
+						}else{
+							console.log('saved!');
+					 	}
+						res.end(JSON.stringify(oOutput));
+					});
+				} else res.end(JSON.stringify(oOutput));
 			});
 			/*
 			var http = require('http');
@@ -119,7 +141,20 @@ var callService = exports.callService = function(req, res){
 				* /
 			});
 			*/
-		} 
+		} else if(oInput.svcId == "getTrackbacks"){ 
+			mongoose.connect(properties.mongodbUrl);
+			models.trackbacks.find({postId:oInput.postId}).sort('date',-1).execFind(function (err, docs) {
+				mongoose.disconnect();
+				if(err){//throw err;
+					console.log(err);
+					oOutput.retCd = "ER";
+				} else {
+					oOutput["trackbacks"] = docs;// docs is an array
+			 	}
+				console.log(oOutput);
+				res.end(JSON.stringify(oOutput));
+			});
+		}
 	}
 	else res.end();
 }

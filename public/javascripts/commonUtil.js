@@ -67,7 +67,7 @@
 			} else if (jqCtl[0].tagName == "SELECT"){
 				jqCtl.val(unescape(val));
 			} else if (jqCtl[0].tagName == "TEXTAREA"){
-				jqCtl.text(unescape(val));
+				jqCtl.val(unescape(val));
 			}
 		});
 	}

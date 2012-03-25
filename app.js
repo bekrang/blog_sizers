@@ -3,6 +3,8 @@
  */
 var express = require('express');
 var mvcController = require('./modules/mvccontroller.js');
+//var httpRequest = require('./modules/httpRequest.js').httpRequest;
+
 //var ejs = require('ejs');
 //var util = require('./util.js');
 //var properties = require('./properties.js');
@@ -30,6 +32,10 @@ app.configure('development', function(){
 app.configure('production', function(){
   app.use(express.errorHandler());
 });
+
+
+//httpRequest.request("http://blog.naver.com/tb/oralhazard/30133536689");
+
 
 //Is there any better idea????
 app.all("/",function(req,res,next){
